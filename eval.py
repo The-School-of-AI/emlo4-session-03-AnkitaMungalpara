@@ -39,9 +39,10 @@ def test_epoch(model, data_loader, device):
             correct += prediction.eq(target.to(device)).sum().item()
 
     test_loss /= len(data_loader.dataset)
-    accuracy = 100.0 * correct / len(data_loader.dataset)
+    accuracy = 100. * correct / len(data_loader.dataset)
     out = {"Test loss": test_loss, "Accuracy": accuracy}
     print(out)
+
     return out
 
 
