@@ -1,0 +1,10 @@
+FROM ankitamungalpara01/mnist-pytorch:latest
+
+# set the working directory
+WORKDIR /opt/mount/
+
+# copy all files from current directory on host into container's working directory
+COPY . .
+
+# specify the command to run
+CMD ["python", "eval.py"]

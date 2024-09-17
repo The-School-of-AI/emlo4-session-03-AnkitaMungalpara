@@ -1,35 +1,139 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/H1dh0F7f)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=15941763&assignment_repo_type=AssignmentRepo)
-# EMLO4 - Session 03
+# MNIST Training, Evaluation, and Inference with Docker Compose
 
-Docker Compose for MNIST Training, Evaluation, and Inference
+This project provides a Docker Compose configuration to handle training, evaluation, and inference on the [MNIST Hogwild](https://github.com/pytorch/examples/tree/main/mnist_hogwild) dataset with PyTorch. It uses Docker Compose to orchestrate three services: **train**, **evaluate**, and **infer**.
 
-In this assignment, you will create a Docker Compose configuration to perform training, evaluation, and inference on the MNIST dataset.
+## Table of Contents
 
-Requirements:
+- [Requirements](#requirements)
+- [Docker Compose Services](#docker-compose-services)
+   - [Train](#1-train)
+   - [Evaluate](#2-evaluate)
+   - [Infer](#3-infer)
+- [Command-Line Arguments](#command-line-arguments)
+- [Docker Compose Configuration](#docker-compose-configuration)
+- [Instructions](#instructions)
 
-1. You’ll need to use this model and training technique (MNIST Hogwild): https://github.com/pytorch/examples/tree/main/mnist_hogwild
-2. Set Num Processes to 2 for MNIST HogWild
-3. Create three services in the Docker Compose file: **`train`**, **`evaluate`**, and **`infer`**.
-4. Use a shared volume called **`mnist`** for sharing data between the services.
-5. The **`train`** service should:
-    - Look for a checkpoint file in the volume. If found, resume training from that checkpoint. Train for **ONLY 1 epoch** and save the final checkpoint. Once done, exit.
-6. The **`evaluate`** service should:
-    - Look for the final checkpoint file in the volume. Evaluate the model using the checkpoint and save the evaluation metrics in a json file. Once done, exit.
-    - Share the model code by importing the model instead of copy-pasting it in eval.py
-7. The **`infer`** service should:
-    - Run inference on any 5 random MNIST images and save the results (images with file name as predicted number) in the **`results`** folder in the volume. Then exit.
-8. After running all the services, ensure that the model, and results are available in the **`mnist`** volume.
 
-Detailed Instructions:
+## Requirements
 
-1. Build all the Docker images using **`docker compose build`**.
-2. Run the Docker Compose services using **`docker compose run train`**, **`docker compose run evaluate`**, and **`docker compose run infer`**. Verify that all services have completed successfully.
-3. Check if the checkpoint file (**`mnist_cnn.pt`**) is saved in the **`mnist`** volume. If found, display "Checkpoint file found." If not found, display "Checkpoint file not found!" and exit with an error.
-4. Check if the evaluation results file (**`eval_results.json`**) is saved in the **`mnist`** volume.
-    1. Example: `{"Test loss": 0.0890245330810547, "Accuracy": 97.12}`
-5. Check the contents of the **`results`** folder in the **`mnist`** volume see if the inference results are saved.
+- `torch`
+- `torchvision`
 
-The provided grading script will run the Docker Compose configuration, check for the required files, display the results, and perform size and version checks.
+You can instll requirements using below command:
+```bash
+pip install -r requirements.txt
+```
 
-You can run it yourself before pushing the code to your repo
+## Docker Compose Services
+
+The Docker Compose configuration defines three services:
+
+### 1. `train`
+
+- Trains the MNIST model.
+- Checks for a checkpoint file in the shared volume. If found, resumes training from that checkpoint.
+- Saves the final checkpoint as `mnist_cnn.pt` and exits.
+
+### 2. `evaluate`
+
+- Checks for the final checkpoint (`mnist_cnn.pt`) in the shared volume.
+- Evaluates the model and saves metrics in `eval_results.json`.
+- The model code is imported rather than copy-pasted into `eval.py`.
+
+### 3. `infer`
+
+- Runs inference on 5 random MNIST images.
+- Saves the results (images with predicted numbers) in the `results` folder within the docker container and exits.
+
+
+## Command-Line Arguments
+
+The MNIST training script accepts the following command-line arguments:
+
+| Argument         | Description                                                        | Default   |
+|------------------|--------------------------------------------------------------------|-----------|
+| `--batch-size`   | Input batch size for training                             | 64        |
+| `--epochs`       | Number of epochs to train                                     | 1         |
+| `--lr`           | Learning rate                                                 | 0.01      |
+| `--momentum`     | SGD momentum                                                   | 0.5       |
+| `--seed`         | Random seed                                                   | 1         |
+| `--log-interval` | How many batches to wait before logging training status            | 10        |
+| `--num-processes`| Number of processes to run script on for distributed processing                             | 2         |
+| `--dry-run`      | Quickly check a single pass without full training                | False     |
+| `--save_model`   | Flag to save the trained model                               | True      |
+| `--save-dir`     | Directory where the checkpoint will be saved                 | `./`      |
+
+
+This table provides a clear and concise overview of the available command-line arguments and their default values.
+
+
+## Docker Compose Configuration
+
+### `docker-compose.yml`
+
+```yaml
+version: '3.8'
+
+services:
+  train:
+    # Train service
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    volumes:
+      - mnist:/opt/mount
+      - ./model:/opt/mount/model
+      - ./data:/opt/mount/data
+
+  evaluate:
+    # Evaluate service
+    build:
+      context: .
+      dockerfile: Dockerfile.eval
+    volumes:
+      - mnist:/opt/mount
+      - ./model:/opt/mount/model
+      - ./data:/opt/mount/data
+
+  infer:
+    # Inference service
+    build:
+      context: .
+      dockerfile: Dockerfile.infer
+    volumes:
+      - mnist:/opt/mount
+      - ./data:/opt/mount/data
+
+volumes:
+  mnist:
+```
+
+## Instructions
+
+1. **Build Docker Images**:
+   ```bash
+   docker compose build
+   ```
+
+2. **Run Services**:
+   - Train:
+     ```bash
+     docker compose run train
+     ```
+   - Evaluate:
+     ```bash
+     docker compose run evaluate
+     ```
+   - Inference:
+     ```bash
+     docker compose run infer
+     ```
+
+3. **Verify Results**:
+   - **Checkpoint File**: Check if `mnist_cnn.pt` is in the `mnist` volume.
+     - If found: "Checkpoint file found."
+     - If not found: "Checkpoint file not found!" and exit with an error.
+   - **Evaluation Results**: Verify `eval_results.json` in the `mnist` volume.
+     - Example format: `{"Test loss": 0.0890245330810547, "Accuracy": 97.12}`
+   - **Inference Results**: Check the `results` folder in the `mnist` volume for saved images.
+

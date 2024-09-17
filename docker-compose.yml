@@ -1,12 +1,34 @@
+version: '3.8'
+
 services:
-    train:
-        # train service
+  train:
+    # Train service
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    volumes:
+      - mnist:/opt/mount
+      - ./model:/opt/mount/model
+      - ./data:/opt/mount/data
 
-    evaluate:
-        # eval service
+  evaluate:
+    # Evaluate service
+    build:
+      context: .
+      dockerfile: Dockerfile.eval
+    volumes:
+      - mnist:/opt/mount
+      - ./model:/opt/mount/model
+      - ./data:/opt/mount/data
 
-    infer:
-        # infer service
+  infer:
+    # Inference service
+    build:
+      context: .
+      dockerfile: Dockerfile.infer
+    volumes:
+      - mnist:/opt/mount
+      - ./data:/opt/mount/data
 
 volumes:
-    # create volumes here
+  mnist:
