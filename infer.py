@@ -7,7 +7,7 @@ from PIL import Image
 from torchvision import datasets, transforms
 
 from model import Net
-
+from uuid import uuid4
 
 def infer(model, dataset, save_dir, num_samples=5):
     """
@@ -35,11 +35,11 @@ def infer(model, dataset, save_dir, num_samples=5):
         img = Image.fromarray(image.squeeze().numpy() * 255).convert("L")
         print(f"{pred}.png")
         from os import walk
-        f = []
-        for (dirpath, dirnames, filenames) in walk(results_dir):
-            f.extend(filenames)
-        print(f)
-        img.save(results_dir / f"{pred}.png")
+        #f = []
+        #for (dirpath, dirnames, filenames) in walk(results_dir):
+        #    f.extend(filenames)
+        #print(f)
+        img.save(results_dir / f"{uuid4()}_{pred}.png")
 
 
 def load_checkpoint(model, checkpoint_path):
