@@ -145,7 +145,7 @@ volumes:
      ```bash
      docker compose run infer
      ```
-    The inference service runs predictions on a few random MNIST images and saves the output images with predicted labels.
+    The inference service runs predictions on a few random MNIST images and saves the output images with the predicted labels.
 
 3️⃣ **Verify Results**:
 
