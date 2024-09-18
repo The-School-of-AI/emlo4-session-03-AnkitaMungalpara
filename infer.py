@@ -34,6 +34,11 @@ def infer(model, dataset, save_dir, num_samples=5):
         print(pred)
         img = Image.fromarray(image.squeeze().numpy() * 255).convert("L")
         print(f"{pred}.png")
+        from os import walk
+        f = []
+        for (dirpath, dirnames, filenames) in walk(results_dir):
+            f.extend(filenames)
+        print(f)
         img.save(results_dir / f"{pred}.png")
 
 
