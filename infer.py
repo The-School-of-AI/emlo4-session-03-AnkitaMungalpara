@@ -26,11 +26,12 @@ def infer(model, dataset, save_dir, num_samples=5):
 
     indices = random.sample(range(len(dataset)), num_samples)
     for idx in indices:
+        print(idx)
         image, _ = dataset[idx]
         with torch.no_grad():
             output = model(image.unsqueeze(0))
         pred = output.argmax(dim=1, keepdim=True).item()
-
+        print(pred)
         img = Image.fromarray(image.squeeze().numpy() * 255).convert("L")
         img.save(results_dir / f"{pred}.png")
 
