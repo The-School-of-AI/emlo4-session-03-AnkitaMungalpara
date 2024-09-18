@@ -33,6 +33,7 @@ def infer(model, dataset, save_dir, num_samples=5):
         pred = output.argmax(dim=1, keepdim=True).item()
         print(pred)
         img = Image.fromarray(image.squeeze().numpy() * 255).convert("L")
+        print(f"{pred}.png")
         img.save(results_dir / f"{pred}.png")
 
 
