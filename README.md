@@ -3,17 +3,17 @@
 This project provides a **Docker Compose** configuration to handle training, evaluation, and inference on the [MNIST Hogwild](https://github.com/pytorch/examples/tree/main/mnist_hogwild) dataset with PyTorch. It uses Docker Compose to orchestrate three services: **train**, **evaluate**, and **infer**.
 
 ## Table of Contents
-
-- [Requirements](#requirements)
-- [Introduction to Docker and Docker Compose](#introduction-to-docker-and-docker-compose)
-- [Docker Compose Services](#docker-compose-services)
-   - [Train](#1-train)
-   - [Evaluate](#2-evaluate)
-   - [Infer](#3-infer)
-- [Command-Line Arguments](#command-line-arguments)
-- [Docker Compose Configuration](#docker-compose-configuration)
+  - [Requirements](#requirements-)
+  - [Introduction to Docker and Docker Compose](#introduction-to-docker-and-docker-compose-)
+  - [Docker Compose Services](#docker-compose-services-️)
+    - [Train](#-train)
+    - [Evaluate](#-evaluate)
+    - [Infer](#-infer)
+  - [Command-Line Arguments](#command-line-arguments-)
+  - [Docker Compose Configuration](#docker-compose-configuration-)
+  - [Instructions](#instructions-)
 - [Instructions](#instructions)
-- [References](#references)
+- [References](#references-)
 
 ## Requirements 📦
 
